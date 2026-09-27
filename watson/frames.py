@@ -8,7 +8,7 @@ HEADERS = ('start', 'stop', 'project', 'id', 'tags', 'updated_at')
 
 
 class Frame(namedtuple('Frame', HEADERS)):
-    def __new__(cls, start, stop, project, id, tags=None, updated_at=None,):
+    def __new__(cls, start, stop, project, frame_id, tags=None, updated_at=None,):
         try:
             if not isinstance(start, arrow.Arrow):
                 start = arrow.get(start)
@@ -33,7 +33,7 @@ class Frame(namedtuple('Frame', HEADERS)):
             tags = []
 
         return super(Frame, cls).__new__(
-            cls, start, stop, project, id, tags, updated_at
+            cls, start, stop, project, frame_id, tags, updated_at
         )
 
     def dump(self):
@@ -119,13 +119,13 @@ class Frames(object):
         else:
             del self._rows[self._get_index_by_id(key)]
 
-    def _get_index_by_id(self, id):
+    def _get_index_by_id(self, frame_id):
         try:
             return next(
-                i for i, v in enumerate(self['id']) if v.startswith(id)
+                i for i, v in enumerate(self['id']) if v.startswith(frame_id)
             )
         except StopIteration:
-            raise KeyError("Frame with id {} not found.".format(id))
+            raise KeyError("Frame with id {} not found.".format(frame_id))
 
     def _get_col(self, col):
         index = HEADERS.index(col)
